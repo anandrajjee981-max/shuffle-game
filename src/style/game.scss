@@ -1,0 +1,298 @@
+$bg-gradient: linear-gradient(135deg, #090d16 0%, #05070b 100%);
+$card-front-bg: #141b2b;
+$text-light: #f3f4f6;
+$glass-bg: rgba(30, 41, 59, 0.4);
+$glass-border: rgba(255, 255, 255, 0.05);
+
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  background: $bg-gradient;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: $text-light;
+  padding: 4rem 1.5rem;
+  box-sizing: border-box;
+
+.timer-display.critical {
+  color: #ef4444 !important;
+  text-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+  animation: pulse-glow 1s infinite alternate;
+}
+
+.time-over-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 7, 11, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .overlay-content {
+    position: relative; 
+    background: #0e131f;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    padding: 2.5rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    max-width: 380px;
+    width: 90%;
+
+    .close-overlay-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #64748b;
+      font-size: 0.9rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border-color: rgba(239, 68, 68, 0.3);
+      }
+    }
+
+    h2 {
+      margin: 0 0 0.75rem 0;
+      font-size: 2.25rem;
+      color: #ef4444;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    p {
+      color: #94a3b8;
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+  }
+}
+
+
+.grid-container.disabled-grid {
+  opacity: 0.4;
+  pointer-events: none; 
+  filter: grayscale(0.5);
+  transition: all 0.3s ease;
+}
+
+@keyframes pulse-glow {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+  
+  .history-floating-btn {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: #a5b4fc;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1);
+
+    &:hover {
+      background: #6366f1;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  
+  .game-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 520px;
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      margin: 0;
+      background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .scoreboard {
+      display: flex;
+      gap: 0.85rem;
+      width: 100%;
+
+      .stat-box {
+        flex: 1;
+        background: $glass-bg;
+        border: 1px solid $glass-border;
+        padding: 0.85rem;
+        border-radius: 14px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+        .label {
+          display: block;
+          font-size: 0.65rem;
+          font-weight: 700;
+          color: #64748b;
+          letter-spacing: 1px;
+          margin-bottom: 0.25rem;
+        }
+
+        .value {
+          font-size: 1.6rem;
+          font-weight: 800;
+        }
+
+        .score-display { color: #38bdf8; }
+        .multiplier-display { color: #f43f5e; }
+        .high-score-display { color: #fbbf24; }
+      }
+
+      
+      .stat-box.highlight {
+        border-color: rgba(251, 191, 36, 0.2);
+        background: rgba(251, 191, 36, 0.02);
+      }
+    }
+  }
+
+
+  .level-buttons {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 520px;
+    margin-bottom: 2.25rem;
+
+    .level-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid $glass-border;
+      color: #94a3b8;
+      padding: 0.75rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: var(--hover-color);
+        border-color: transparent;
+        color: #fff;
+        box-shadow: 0 4px 15px var(--hover-color);
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    width: 100%;
+    max-width: 520px;
+  }
+
+
+  .card-scene {
+    aspect-ratio: 1 / 1;
+    perspective: 1000px;
+    cursor: pointer;
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      border-radius: 12px;
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-front {
+      background: $card-front-bg;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+      }
+    }
+
+    .card-back {
+      background: #ffffff;
+      transform: rotateY(180deg);
+      border: 1px solid #e2e8f0;
+
+      span {
+        font-size: 2.25rem;
+        user-select: none;
+      }
+    }
+  }
+}
+
+
+@media (max-width: 540px) {
+  .container {
+    padding: 6rem 1rem 2rem 1rem; 
+
+    .history-floating-btn {
+      top: 15px;
+      right: 15px;
+    }
+
+    .game-header h1 { font-size: 2.4rem; }
+    .scoreboard .stat-box .value { font-size: 1.3rem; }
+    .card-back span { font-size: 1.8rem; }
+    .grid-container { gap: 8px; }
+  }
+}

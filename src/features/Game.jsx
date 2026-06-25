@@ -30,6 +30,10 @@ const Game = () => {
 
   const cardsRef = useRef([]);
   const timerIntervalRef = useRef(null); 
+  
+ 
+  const liveScoreRef = useRef(0);
+  const liveTimeLeftRef = useRef(null);
 
   const levelsList = [
     { name: 'Easy', points: 1, color: '#10b981', initialTime: 45 },
@@ -50,6 +54,7 @@ const Game = () => {
     setCards(generateDeck());
     fetchHighScore();
     setTimeLeft(45); 
+    liveTimeLeftRef.current = 45;
 
     return () => clearInterval(timerIntervalRef.current);
   }, []);
@@ -71,30 +76,42 @@ const Game = () => {
     
     setSelectedCards([]);
     setMatchedCards([]);
+    
+  
     setScore(0);
+    liveScoreRef.current = 0; 
+    
     setMultiplier(levelObj.points);
     setIsFlipping(false);
     setIsTimeOver(false); 
     setCards(generateDeck());
     
     setTimeLeft(levelObj.initialTime);
+    liveTimeLeftRef.current = levelObj.initialTime;
+    
     startCountdown(levelObj.initialTime);
   };
 
+ 
   const startCountdown = (duration) => {
     let currentClockValue = duration;
     timerIntervalRef.current = setInterval(() => {
       currentClockValue--;
       setTimeLeft(currentClockValue);
+      liveTimeLeftRef.current = currentClockValue; // Update live ref
 
       if (currentClockValue <= 0) {
         clearInterval(timerIntervalRef.current);
-        setIsTimeOver(true); 
+        setIsTimeOver(true);
+      
+        
+        if (liveScoreRef.current > 0) {
+          handleGameOver(liveScoreRef.current, 0);
+        }
       }
     }, 1000);
   };
 
-  
   const handleCloseOverlay = () => {
     setIsTimeOver(false); 
     
@@ -104,24 +121,32 @@ const Game = () => {
     setSelectedCards([]);
     setMatchedCards([]);
     setScore(0);
+    liveScoreRef.current = 0;
     setIsFlipping(false);
     setCards(generateDeck());
     setTimeLeft(45); 
+    liveTimeLeftRef.current = 45;
   };
 
   useEffect(() => {
     if (matchedCards.length === 16 && score > 0) {
       clearInterval(timerIntervalRef.current);
-      handleGameOver();
+      handleGameOver(score, liveTimeLeftRef.current);
     }
   }, [matchedCards]);
 
-  const handleGameOver = async () => {
-    const updatedHistory = await submitscore(SCORE_STORAGE_KEY, score);
+  
+  const handleGameOver = async (scoreToSave, currentRemainingTime) => {   
+    const updatedHistory = await submitscore(SCORE_STORAGE_KEY, scoreToSave);
     if (updatedHistory && updatedHistory.length > 0) {
       setHighScore(Math.max(...updatedHistory));
     }
-    alert(`🎉 Game Over! Total Score: ${score}. Score saved to local history.`);
+    
+    if (currentRemainingTime <= 0) {
+      alert(`⏰ Time's up! But your partial score of ${scoreToSave} pts has been saved to history.`);
+    } else {
+      alert(`🎉 Brilliant! You cleared the board. Total Score: ${scoreToSave}. Saved to history.`);
+    }
   };
 
   const handleCardClick = (index) => {
@@ -143,7 +168,13 @@ const Game = () => {
       
       if (cards[firstIdx].icon === cards[secondIdx].icon) {
         setMatchedCards((prev) => [...prev, firstIdx, secondIdx]);
-        setScore((prevScore) => prevScore + multiplier);
+     
+        setScore((prevScore) => {
+          const newScore = prevScore + multiplier;
+          liveScoreRef.current = newScore; 
+          return newScore;
+        });
+        
         setSelectedCards([]);
       } else {
         setIsFlipping(true);
@@ -169,7 +200,6 @@ const Game = () => {
         📊 View History
       </button>
 
-      
       {isTimeOver && (
         <div className="time-over-overlay">
           <div className="overlay-content">
